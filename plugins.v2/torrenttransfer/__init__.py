@@ -22,19 +22,19 @@ from app.utils.string import StringUtils
 
 class TorrentTransfer(_PluginBase):
     # 插件名称
-    plugin_name = "自动转移做种"
+    plugin_name = "自动转移做种V2"
     # 插件描述
     plugin_desc = "定期转移下载器中的做种任务到另一个下载器。"
     # 插件图标
     plugin_icon = "seed.png"
     # 插件版本
-    plugin_version = "1.10.2"
+    plugin_version = "2.0.0"
     # 插件作者
-    plugin_author = "jxxghp"
+    plugin_author = "sunsky"
     # 作者主页
-    author_url = "https://github.com/jxxghp"
+    author_url = "https://github.com/sunskyhsh"
     # 插件配置项ID前缀
-    plugin_config_prefix = "torrenttransfer_"
+    plugin_config_prefix = "torrenttransferv2_"
     # 加载顺序
     plugin_order = 18
     # 可使用的用户级别
@@ -57,6 +57,7 @@ class TorrentTransfer(_PluginBase):
     _includecategory = None
     _nopaths = None
     _deletesource = False
+    _stopsource = False
     _deleteduplicate = False
     _fromtorrentpath = None
     _autostart = False
@@ -89,6 +90,7 @@ class TorrentTransfer(_PluginBase):
             self._fromdownloader = config.get("fromdownloader")
             self._todownloader = config.get("todownloader")
             self._deletesource = config.get("deletesource")
+            self._stopsource = config.get("stopsource")
             self._deleteduplicate = config.get("deleteduplicate")
             self._fromtorrentpath = config.get("fromtorrentpath")
             self._nopaths = config.get("nopaths")
@@ -527,6 +529,22 @@ class TorrentTransfer(_PluginBase):
                                     {
                                         'component': 'VSwitch',
                                         'props': {
+                                            'model': 'stopsource',
+                                            'label': '停止源种子',
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                'component': 'VCol',
+                                'props': {
+                                    'cols': 12,
+                                    'md': 3
+                                },
+                                'content': [
+                                    {
+                                        'component': 'VSwitch',
+                                        'props': {
                                             'model': 'deleteduplicate',
                                             'label': '删除重复种子',
                                         }
@@ -897,6 +915,9 @@ class TorrentTransfer(_PluginBase):
                     if self._deletesource:
                         logger.info(f"删除源下载器任务（不含文件）：{torrent_item.get('hash')} ...")
                         from_downloader.delete_torrents(delete_file=False, ids=[torrent_item.get('hash')])
+                    elif self._stopsource:
+                        logger.info(f"停止源下载器任务：{torrent_item.get('hash')} ...")
+                        from_downloader.stop_torrents(ids=[torrent_item.get('hash')])
 
                     # 成功计数
                     success += 1
@@ -907,6 +928,7 @@ class TorrentTransfer(_PluginBase):
                                        "to_download": to_service.name,
                                        "to_download_id": download_id,
                                        "delete_source": self._deletesource,
+                                       "stop_source": self._stopsource,
                                        "delete_duplicate": self._deleteduplicate,
                                    })
             # 触发校验任务
