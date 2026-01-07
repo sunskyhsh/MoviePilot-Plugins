@@ -377,16 +377,15 @@
       "v1.7.1": "修复偶尔安装失败问题"
     }
   },
-  "TorrentTransferV2": {
-    "name": "自动转移做种V2",
+  "TorrentTransfer": {
+    "name": "自动转移做种",
     "description": "定期转移下载器中的做种任务到另一个下载器。",
     "labels": "做种",
-    "version": "2.0.0",
+    "version": "1.6",
     "icon": "seed.png",
-    "author": "sunsky",
+    "author": "jxxghp",
     "level": 2,
     "history": {
-      "v2.0.0": "支持转移种子后停止源下载器任务"
     }
   },
   "RssSubscribe": {
