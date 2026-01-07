@@ -20,7 +20,7 @@ from app.schemas import NotificationType, ServiceInfo
 from app.utils.string import StringUtils
 
 
-class TorrentTransfer(_PluginBase):
+class TorrentTransferV2(_PluginBase):
     # 插件名称
     plugin_name = "自动转移做种V2"
     # 插件描述
@@ -183,8 +183,8 @@ class TorrentTransfer(_PluginBase):
         if self.get_state():
             return [
                 {
-                    "id": "TorrentTransfer",
-                    "name": "转移做种服务",
+                    "id": "TorrentTransferV2",
+                    "name": "转移做种服务V2",
                     "trigger": CronTrigger.from_crontab(self._cron),
                     "func": self.transfer,
                     "kwargs": {}
